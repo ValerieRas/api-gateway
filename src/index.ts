@@ -13,6 +13,10 @@ const PORTAUTH :number = process.env.PORTAUTH ? Number(process.env.PORTAUTH) : 3
 const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
 
+  if(req.method === 'GET') {
+    return next();
+  }
+
   if (!authHeader) {
     return res.status(401).json({ error: 'Autorisation manquante' });
   }
