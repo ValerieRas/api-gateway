@@ -1,0 +1,22 @@
+info:
+  name: getUserToken
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/auth/local/
+  body:
+    type: json
+    data: |-
+      {
+        "user_name":"SabSab",
+        "mdp":"SabSab"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

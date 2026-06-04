@@ -38,13 +38,18 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
 };
 
 const proxyMiddleware = createProxyMiddleware<Request, Response>({
-  target: `http://localhost:${PORTQCM}`,
+  target: `http://localhost:${PORTQCM}/qcms`,
   changeOrigin: true,
-  pathRewrite: {'^/api/qcms': '/qcms'}
-  
 });
 
-app.use('/api', authMiddleware, proxyMiddleware);
+const authProxyMiddleware = createProxyMiddleware<Request, Response>({
+  target: `http://localhost:${PORTAUTH}/auth`,
+  changeOrigin: true,
+});
+
+
+app.use('/api/auth', authProxyMiddleware);
+app.use('/api/qcms', authMiddleware, proxyMiddleware);
 
 
 app.listen(PORT, '0.0.0.0', () => {
