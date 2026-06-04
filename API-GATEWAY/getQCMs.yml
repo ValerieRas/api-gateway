@@ -6,10 +6,13 @@ info:
 http:
   method: GET
   url: http://localhost:3000/api/qcms
-  auth: inherit
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcl9uYW1lIjoiU2FiU2FiIiwiY3JlYXRlZF9hdCI6IjIwMjYtMDYtMDRUMDc6NDg6NDguODYzWiIsImRlbGV0ZWRfYXQiOm51bGwsImlhdCI6MTc4MDU2NDA0M30.FNhqAGiH6gugMC0icyLCupo8oDxEhI1p_5cJXBOw6HM
 
 settings:
   encodeUrl: true
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+​

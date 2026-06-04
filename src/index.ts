@@ -8,15 +8,43 @@ const app = express()
 
 const PORT :number = process.env.PORT ? Number(process.env.PORT) : 3000
 const PORTQCM :number = process.env.PORTQCM ? Number(process.env.PORTQCM) : 3001
+const PORTAUTH :number = process.env.PORTAUTH ? Number(process.env.PORTAUTH) : 3002
 
+const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+  const authHeader = req.headers['authorization'];
+
+  if (!authHeader) {
+    return res.status(401).json({ error: 'Autorisation manquante' });
+  }
+  
+  const authResponse = await fetch(`http://localhost:${PORTAUTH}/users/me`, {
+      method: 'GET',
+      headers: { 
+        'Authorization': authHeader,
+        'Content-Type': 'application/json'
+      }
+    });
+      
+    if (!authResponse.ok) {  
+      res.status(401).json({ error: 'Unauthorized: Token invalide' , status: authResponse.status, statusText: authResponse.statusText});
+      return;
+    }
+    else{
+      const authData = await authResponse.json();
+      req.headers['X-User-Id'] = authData.id.toString();
+    }
+
+  next();
+};
 
 const proxyMiddleware = createProxyMiddleware<Request, Response>({
   target: `http://localhost:${PORTQCM}`,
   changeOrigin: true,
   pathRewrite: {'^/api/qcms': '/qcms'}
+  
 });
 
-app.use('/api', proxyMiddleware);
+app.use('/api', authMiddleware, proxyMiddleware);
 
 
 app.listen(PORT, '0.0.0.0', () => {
